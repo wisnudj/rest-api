@@ -16,6 +16,10 @@ var findAll = (req, res) => {
 var createUser = (req, res) => {
   bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
     // Store hash in your password DB.
+    if(err) {
+      res.send(err)
+    }
+
     models.User.create({username: req.body.username, password: hash, role: req.body.role}).then(() => {
       res.send('berhasil')
     }).catch((err) => {
@@ -27,13 +31,22 @@ var createUser = (req, res) => {
 var deleteUser = (req, res) => {
   models.User.destroy({where:{id:req.params.id}}).then(() => {
     res.send('berhasil menghapus')
+  }).catch((err) => {
+    res.send(err)
   })
 }
 
 var editByid = (req, res) => {
   bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+
+    if(err) {
+      res.send(err)
+    }
+
     models.User.update({username: req.body.username, password: hash, role: req.body.role}, {where:{id:req.params.id}}).then(() => {
       res.send('berhasil')
+    }).catch((err) => {
+      res.send(err)
     })
   })
 }
@@ -41,6 +54,8 @@ var editByid = (req, res) => {
 var findOne = (req, res) => {
   models.User.findOne({where:{id:req.params.id}}).then((user) => {
     res.send(user)
+  }).catch((err) => {
+    res.send(err)
   })
 }
 
@@ -59,8 +74,12 @@ var signin = (req, res) => {
         } else {
           res.send('password salah')
         }
+      }).catch((err) => {
+        res.send(err)
       })
     }
+  }).catch((err) => {
+    res.send(err)
   })
 }
 
@@ -72,7 +91,9 @@ var signup = (req, res) => {
     }).catch((err) => {
       res.send(err)
     })
-  });
+  }).catch((err) => {
+    res.send(err)
+  })
 }
 
 module.exports = {
